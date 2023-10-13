@@ -1,4 +1,4 @@
---Importing and Exploring the Dataset--
+--Importing and Exploring the Dataset
 SELECT * 
 From CopyofIMDBTop250MoviesCleanedversionIMDBTop250Movies;
 alter TABLE CopyofIMDBTop250MoviesCleanedversionIMDBTop250Movies 
@@ -7,33 +7,33 @@ SELECT *
 FROM Movies;
 
 
---Idenitifying Top 5 Budgeted Films--
+--Idenitifying Top 5 Budgeted Films
 SELECT name, budget
 from Movies
 order by budget desc limit 5;
 
-  - Adjusting for non-USD currencies- 
-    -Princess Mononoke-
+  --Adjusting for non-USD currencies
+    --Princess Mononoke
 UPDATE Movies
 SET budget = REPLACE(budget, 2400000000, 23500000)
 
-    -3 Idiots-
+    --3 Idiots
 UPDATE Movies 
 SET budget = REPLACE(budget, 550000000, 6700000)
 
---Retreiving Corrected Top 5 Budgeted Films--
+--Retreiving Corrected Top 5 Budgeted Films
 SELECT name, budget
 FROM Movies
 ORDER BY budget DESC
 LIMIT 5
-                ---File Exported As: Top_5_Budgeted.csv for reference---
+                --File Exported As: Top_5_Budgeted.csv for reference
 
 --Top 5 Rated Movies--
 SELECT name, rating
 FROM Movies
 ORDER BY rating DESC
 LIMIT 5
-                ---File Exported As: Top_5_HighestRated.csv for reference---
+                --File Exported As: Top_5_HighestRated.csv for reference
 
 --Top 5 Box Office Hits--
 SELECT name, box_office
@@ -41,14 +41,14 @@ SELECT name, box_office
  GROUP BY name 
  ORDER BY box_office DESC
  LIMIT 5
-                ---File Exported As: Top_5_BoxOffice.csv for reference---
+                --File Exported As: Top_5_BoxOffice.csv for reference
 
 --Top 10 Most Profitable Movies--
  SELECT name, budget, box_office, (box_office - budget) AS profit 
  FROM Movies
  ORDER BY profit DESC
  LIMIT 10
-                 ---File Exported As: Top_10_MostProfitable.csv for reference---
+                 --File Exported As: Top_10_MostProfitable.csv for reference
 
 --Identifying Popular Genres--
 SELECT genre, COUNT(*) AS genre_count
@@ -60,7 +60,7 @@ FROM (
 GROUP BY genre
 ORDER BY genre_count DESC
 LIMIT 5
-                  ---File Exported As: Top_5_PopularGenres.csv for reference---
+                  --File Exported As: Top_5_PopularGenres.csv for reference
 
 --Finding Directors with the Most Movies--
 SELECT directors, COUNT(*) AS Number_of_movies
@@ -68,74 +68,74 @@ SELECT directors, COUNT(*) AS Number_of_movies
  GROUP BY directors
  ORDER BY COUNT(*) DESC
  Limit 10
-                  ---File Exported As: Top_10_Directors.csv for reference---
+                  --File Exported As: Top_10_Directors.csv for reference
 
---Number of Movies with Each Rating--
+--Number of Movies with Each Rating
 SELECT rating, COUNT(*) AS rating_count
  FROM Movies
  GROUP BY rating
  ORDER BY COUNT(*) DESC
-                   ---File Exported As: Rating_Count.csv for reference---
+                 --File Exported As: Rating_Count.csv for reference
 
---Top 10 Best years--
+--Top 10 Best years
 SELECT year, AVG(rating) AS avg_rating
 FROM Movies
 GROUP BY year
 ORDER BY avg_rating DESC
 LIMIT 10;
-                   ---File Exported As: Top_10_BestYears.csv for reference---
+                   --File Exported As: Top_10_BestYears.csv for reference
 
---How Many Movies per Decade--
+--How Many Movies per Decade
 SELECT
   CAST((year / 10 * 10) AS TEXT) || 's' AS decade,
   COUNT(*) AS movie_count
 FROM Movies
 GROUP BY decade
 ORDER BY decade;
-                   ---File Exported As: Movies_By_Decade.csv for reference---
+                   --File Exported As: Movies_By_Decade.csv for reference
 
---Most Popular Movie Genre in Each Decade--
-		-genre_counts Common Table Expression (CTE): Extract and count genres per year-
+--Most Popular Movie Genre in Each Decade
+		--genre_counts Common Table Expression (CTE): Extract and count genres per year
 WITH genre_counts AS (
   SELECT genre, COUNT(*) AS genre_count, year
   FROM (
-		-Split the comma-separated genre values into separate rows-
+		--Split the comma-separated genre values into separate rows
     SELECT TRIM(value) AS genre, year
     FROM Movies
-		-CROSS JOIN with json_each to create separate rows for each genre-
+		--CROSS JOIN with json_each to create separate rows for each genre
     CROSS JOIN json_each('["' || REPLACE(genre, ',', '","') || '"]')
   )
-		-Group the data by genre and year-
+		--Group the data by genre and year
   GROUP BY genre, year
 ),
-		-decade_max_genre CTE: Find the most popular genre per decade-
+		--decade_max_genre CTE: Find the most popular genre per decade
 decade_max_genre AS (
   SELECT 
     d.decade_start || ' - ' || d.decade_end AS decade,
     gc.genre,
-		-Assign a row number based on genre count within each decade-
+		--Assign a row number based on genre count within each decade
     ROW_NUMBER() OVER (PARTITION BY d.decade_start ORDER BY gc.genre_count DESC) AS rn
   FROM (
-		-Calculate the start and end years for each decade-
+		--Calculate the start and end years for each decade
     SELECT 
       (year/10) * 10 + 1 AS decade_start,
       (year/10) * 10 + 10 AS decade_end
     FROM Movies
-		-Group by decade-
+		--Group by decade
     GROUP BY year/10
   ) d
-		-Join with the genre_counts CTE-
+		--Join with the genre_counts CTE
   JOIN genre_counts gc ON gc.year >= d.decade_start AND gc.year <= d.decade_end
 )
 
-		-Final Query: Select the most popular genre for each decade-
+		--Final Query: Select the most popular genre for each decade
 SELECT decade, genre
 FROM decade_max_genre
-		-Filter for the most popular genre within each decade-
+		--Filter for the most popular genre within each decade
 WHERE rn = 1
-		-Order the result by decade-
+		--Order the result by decade
 ORDER BY decade;
 
-                   ---File Exported As: PopularGenre_Decades.csv for reference---
+                   --File Exported As: PopularGenre_Decades.csv for reference
        
 
