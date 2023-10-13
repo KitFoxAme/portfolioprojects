@@ -11,7 +11,7 @@ To access each of these insights, please refer to the respective SQL queries pro
 ## Query Breakdown
 For a detailed breakdown of each query in this project, please refer to the following file:
 
-**[Query Breakdown (PDF)](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20project)**
+**[Query Breakdown](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20project)**
 
 ## Overview
 Welcome to the world of data analysis! In this project, I've harnessed the power of SQLite to delve into an IMDb movie dataset. The mission is to extract insights, identify trends, and present the findings to stakeholders. By the end of this journey, I will have unlocked useful information about the movie industry from this dataset.
