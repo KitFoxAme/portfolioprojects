@@ -95,44 +95,47 @@ ORDER BY decade;
                    ---File Exported As: Movies_By_Decade.csv for reference---
 
 --Most Popular Movie Genre in Each Decade--
-  -Needed to split Genre column into split_1, split_2, & split_3 in original .csv file to achieve this-
-
-        -Common Table Expression (CTE) to transform and combine the data from the original table-
-WITH AllGenres AS (
-  SELECT
-              -Extract the decade from the year and format it-
-    SUBSTR(year, 1, 3) || '0s' AS decade,
-              -Combine genre columns into a single column-
-    Split_1 AS genre
-  FROM SplitGenreIMDBTop250Movies
-  UNION ALL
-  SELECT
-    SUBSTR(year, 1, 3) || '0s' AS decade,
-    Split_2 AS genre
-  FROM SplitGenreIMDBTop250Movies
-  UNION ALL
-  SELECT
-    SUBSTR(year, 1, 3) || '0s' AS decade,
-    Split_3 AS genre
-  FROM SplitGenreIMDBTop250Movies
+		-genre_counts Common Table Expression (CTE): Extract and count genres per year-
+WITH genre_counts AS (
+  SELECT genre, COUNT(*) AS genre_count, year
+  FROM (
+		-Split the comma-separated genre values into separate rows-
+    SELECT TRIM(value) AS genre, year
+    FROM Movies
+		-CROSS JOIN with json_each to create separate rows for each genre-
+    CROSS JOIN json_each('["' || REPLACE(genre, ',', '","') || '"]')
+  )
+		-Group the data by genre and year-
+  GROUP BY genre, year
+),
+		-decade_max_genre CTE: Find the most popular genre per decade-
+decade_max_genre AS (
+  SELECT 
+    d.decade_start || ' - ' || d.decade_end AS decade,
+    gc.genre,
+		-Assign a row number based on genre count within each decade-
+    ROW_NUMBER() OVER (PARTITION BY d.decade_start ORDER BY gc.genre_count DESC) AS rn
+  FROM (
+		-Calculate the start and end years for each decade-
+    SELECT 
+      (year/10) * 10 + 1 AS decade_start,
+      (year/10) * 10 + 10 AS decade_end
+    FROM Movies
+		-Group by decade-
+    GROUP BY year/10
+  ) d
+		-Join with the genre_counts CTE-
+  JOIN genre_counts gc ON gc.year >= d.decade_start AND gc.year <= d.decade_end
 )
-      -Main query-
-SELECT
-  decade,
-  genre,
-  genre_count
-FROM (
-      -Subquery to count genres within decades and rank them-
-  SELECT
-    decade,
-    genre,
-    COUNT(*) AS genre_count,
-    ROW_NUMBER() OVER (PARTITION BY decade ORDER BY COUNT(*) DESC) AS row_num
-  FROM AllGenres
-  WHERE genre IS NOT NULL AND genre <> ''
-  GROUP BY decade, genre
-) AS ranked_genres
-WHERE row_num = 1;
+
+		-Final Query: Select the most popular genre for each decade-
+SELECT decade, genre
+FROM decade_max_genre
+		-Filter for the most popular genre within each decade-
+WHERE rn = 1
+		-Order the result by decade-
+ORDER BY decade;
+
                    ---File Exported As: PopularGenre_Decades.csv for reference---
        
 
