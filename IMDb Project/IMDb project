@@ -11,15 +11,16 @@ FROM Movies;
 --Idenitifying Top 5 Budgeted Films
 
 SELECT name, budget
-from Movies
-order by budget desc limit 5;
+FROM Movies
+ORDER BY budget DESC
+LIMIT 5
 
   --Adjusting dataset for non-USD currencies
-    --Princess Mononoke
+    --Princess Mononoke: Yen > USD
 UPDATE Movies
 SET budget = REPLACE(budget, 2400000000, 23500000)
 
-    --3 Idiots
+    --3 Idiots: Crore > USD
 UPDATE Movies 
 SET budget = REPLACE(budget, 550000000, 6700000)
 
@@ -92,21 +93,21 @@ SELECT directors, COUNT(*) AS Number_of_movies
 
 --Number of Movies with Each Rating
 
-SELECT rating, COUNT(*) AS rating_count
- FROM Movies
- GROUP BY rating
- ORDER BY COUNT(*) DESC
+Select certificate, count(*) AS total
+FROM Movies
+group by certificate 
+order by total DESC
                  --File Exported As: Rating_Count.csv for reference
 
 
 
 --Top 10 Best years
 
-SELECT year, AVG(rating) AS avg_rating
-FROM Movies
-GROUP BY year
-ORDER BY avg_rating DESC
-LIMIT 10;
+ SELECT year, COUNT(year) AS Number_of_Movies_Per_Year
+ FROM Movies
+ GROUP BY year
+ ORDER BY COUNT(year) DESC
+ Limit 10
                    --File Exported As: Top_10_BestYears.csv for reference
 
 
