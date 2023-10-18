@@ -32,7 +32,7 @@ As part of my analysis, I've generated ten key insights that offer a comprehensi
    - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/Top_10_MostProfitable.csv)
 
 5. **Most Popular Genre:**
-   - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/PopularGenre_Decades.csv)
+   - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/Top_5_PopularGenres.csv)
 
 6. **Top 10 Directors:**
    - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/Top_10_Directors.csv)
@@ -47,7 +47,7 @@ As part of my analysis, I've generated ten key insights that offer a comprehensi
    - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/Movies_By_Decade.csv)
 
 10. **Most Popular Movie Genre in Each Decade:** 
-   - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/Top_5_PopularGenres.csv)
+   - [Download CSV](https://github.com/KitFoxAme/portfolioprojects/blob/main/IMDb%20Project/IMDb%20Project%20.csv%20Files/PopularGenre_Decades.csv)
 
 At the end of this journey, we're equipped with a comprehensive understanding of the movie dataset, ready to share valuable insights and engage with stakeholders.
 
